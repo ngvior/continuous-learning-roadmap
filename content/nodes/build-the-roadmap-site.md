@@ -1,0 +1,28 @@
+---
+title: Build the Roadmap Site
+type: project
+lane: backend
+order: 1
+status: in-progress
+hours: 30
+prerequisites: []
+links:
+  - label: Repository
+    url: https://github.com/ngvior/continuous-learning-roadmap
+started: "2026-09-11"
+language: typescript
+repo: https://github.com/ngvior/continuous-learning-roadmap
+phases:
+  - Content schema and validator
+  - Swimlane graph
+  - Node detail sheet
+  - Heartbeat
+  - Roadmap CLI
+attached: []
+---
+
+The public Next.js application that renders this Roadmap: its Lanes, Nodes, Prerequisites and live Status, plus the Heartbeat that shows how long ago the last Content Commit landed. It is the first Project because everything else on the Roadmap becomes visible through it, and because the accountability mechanism (a public "last Content Commit N days ago" signal, no deadlines) only works once the site is live. Content lives as Markdown and YAML files validated by a schema, so a Content Commit is a plain git commit.
+
+## Log
+
+- 2026-09-11: Bootstrapped the Next.js skeleton and made the first Vercel deploy.

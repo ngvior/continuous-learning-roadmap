@@ -1,0 +1,16 @@
+- id: foundations
+  title: Foundations
+  order: 1
+  description: The mathematics and statistics groundwork (linear algebra, calculus, probability, statistics, optimization) that the Machine Learning and AI Engineering Nodes lean on.
+- id: machine-learning
+  title: Machine Learning
+  order: 2
+  description: Neural networks and NLP from first principles, from text representation and embeddings to training a GPT, learned code-first.
+- id: ai-engineering
+  title: AI Engineering
+  order: 3
+  description: Building, evaluating and operating LLM systems (the Claude platform, RAG, agents, evals, fine-tuning), anchored by the BASWE Projects that yield portfolio artifacts.
+- id: backend
+  title: Backend
+  order: 4
+  description: Distributed-systems depth for a working NestJS engineer (caching, queues, scaling, fault tolerance) plus the TypeScript Projects that apply it, including the Roadmap Site itself.
