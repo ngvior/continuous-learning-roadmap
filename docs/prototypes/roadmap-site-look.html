@@ -1,0 +1,516 @@
+<!--
+  PROTOTYPE. Throwaway. Resolves wayfinder ticket #9 (Prototype the Roadmap Site look and layout).
+
+  Rounds 1 to 3 settled the layout: the Roadmap graph (roadmap.sh-style swimlanes, x = Lane, y = Suggested Order,
+  Prerequisite edges), the loud masthead with the pulse trace, the Aura accents over the Indigo dark palette, the
+  indigo neural-network drift behind the page, and the Node detail as a centered overlay sheet. The Lane board and
+  Ledger variants were discarded by the owner and removed from this file.
+
+  Round 4 question: how should the overlay sheet open and close so it is not abrupt, while keeping the subtle
+  register of the Roadmap? Three motion variants, switchable via ?motion=1|2|3 (or the floating bar, or the
+  left/right arrow keys). Click any Node to play the opening; close with the button, the backdrop or Escape.
+
+    1  Settle    backdrop fades, the sheet fades in while rising 12 px and easing from 98.5% scale
+    2  Emerge    the sheet grows from the clicked Node (transform-origin at the Node), backdrop fades. CHOSEN (round 4).
+    3  Unfold    the sheet opens from its horizontal midline like a card unfolding, then the text fades in
+
+  Fixture: the real Roadmap v1 (four Lanes, 21 Nodes) from ticket #10. Two scenarios via ?scenario=launch|month6.
+  The ORT Overlap mark on Node 8 is illustrative only; no Resource carries the mark today.
+
+  Design plan: Indigo dark palette from the owner's teach-template (paper #12151a, paper-alt #1b1f27, ink #dfe4ec,
+  rule #2e3440), Inter + JetBrains Mono, editorial-terminal register, blended with the Aura theme: purple #a277ff is
+  the accent (in-progress, Next, links, highlighted edges), green #61ffca is accent-2 (done, fresh Heartbeat); the
+  aging Heartbeat uses Aura orange #ffca85 and red #ff6767. The teach-template indigo #9aa6ef is the colour of the
+  neural-network drift. Lanes carry no hue: colour is reserved for Status and Heartbeat.
+-->
+<title>Roadmap Site Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #12151a;
+    --paper-alt: #1b1f27;
+    --ink: #dfe4ec;
+    --ink-2: #8b94a7;
+    --ink-3: #565e72;
+    --rule: #2e3440;
+    --accent: #a277ff;
+    --accent-2: #61ffca;
+    --indigo: #9aa6ef;
+    --age-3: #ffca85;
+    --age-4: #ff6767;
+    --sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --gutter: clamp(16px, 4vw, 48px);
+    --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--paper); }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding-block: 0 96px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  button:focus-visible, [tabindex]:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .mono { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0; }
+  .muted { color: var(--ink-2); }
+  h1, h2, h3, p { margin: 0; }
+  #app { max-width: 1280px; margin: 0 auto; padding-inline: var(--gutter); position: relative; z-index: 1; }
+  #net { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+  /* ---------- Status glyphs ---------- */
+  .st {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none;
+    border: 1.5px solid var(--ink-3); background: transparent; position: relative; vertical-align: middle;
+  }
+  .st.in-progress { border-color: var(--accent); background: var(--accent); }
+  .st.in-progress::after {
+    content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 1px solid var(--accent);
+    opacity: 0.6; animation: ring 2.4s ease-out infinite;
+  }
+  .st.done { border-color: var(--accent-2); background: var(--accent-2); }
+  @keyframes ring { 0% { transform: scale(0.6); opacity: 0.7; } 100% { transform: scale(1.4); opacity: 0; } }
+  @keyframes dash { to { stroke-dashoffset: 0; } }
+  .tok { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+  .tok.in-progress { color: var(--accent); }
+  .tok.done { color: var(--accent-2); }
+  .chip {
+    font-family: var(--mono); font-size: 10.5px; line-height: 1; padding: 3px 6px; border-radius: 2px;
+    border: 1px solid var(--rule); color: var(--ink-2); white-space: nowrap;
+  }
+  .chip.next { border-color: var(--accent); color: var(--accent); }
+  .chip.ort { border-style: dashed; }
+  .hb-1 { color: var(--accent-2); } .hb-2 { color: var(--ink); } .hb-3 { color: var(--age-3); } .hb-4 { color: var(--age-4); }
+  .stroke-1 { stroke: var(--accent-2); } .stroke-2 { stroke: var(--ink); } .stroke-3 { stroke: var(--age-3); } .stroke-4 { stroke: var(--age-4); }
+
+  /* ---------- Masthead with the Heartbeat ---------- */
+  .mast {
+    display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+    padding: 56px 0 28px; border-bottom: 1px solid var(--rule);
+  }
+  .mast h1 { font-size: clamp(28px, 3.4vw, 40px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+  .mast .lede { color: var(--ink-2); margin-top: 12px; max-width: 46ch; }
+  .heart { text-align: right; min-width: 320px; }
+  .heart svg { display: block; width: 320px; height: 56px; margin-left: auto; }
+  .heart .line { font-family: var(--mono); font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+  .heart .line b { font-weight: 500; font-size: 20px; letter-spacing: -0.02em; }
+  .intro { color: var(--ink-2); max-width: 60ch; padding: 18px 0 6px; }
+  @media (max-width: 720px) {
+    .mast { grid-template-columns: 1fr; align-items: start; }
+    .heart { text-align: left; min-width: 0; } .heart svg { margin-left: 0; max-width: 100%; }
+  }
+
+  /* ---------- Roadmap graph ---------- */
+  .scroll { overflow-x: auto; margin-top: 8px; }
+  .graph { display: block; min-width: 1040px; }
+  .graph .lane-head { font: 500 13px var(--sans); fill: var(--ink); }
+  .graph .lane-sub { font: 11.5px var(--mono); fill: var(--ink-3); }
+  .graph .lane-line { stroke: var(--rule); stroke-dasharray: 2 6; }
+  .graph .edge { fill: none; stroke: var(--rule); stroke-width: 1.25; transition: stroke .15s, opacity .15s; }
+  .graph .edge.hi { stroke: var(--accent); stroke-width: 1.5; }
+  .graph .edge.lo { opacity: 0.15; }
+  .graph .node { cursor: pointer; }
+  .graph .node rect.box { fill: var(--paper); stroke: var(--rule); stroke-width: 1; rx: 3; transition: fill .15s, stroke .15s; }
+  .graph .node:hover rect.box, .graph .node.selected rect.box { fill: var(--paper-alt); stroke: var(--ink-2); }
+  .graph .node.in-progress rect.box { fill: var(--paper-alt); stroke: var(--accent); }
+  .graph .node.done rect.box { stroke: var(--accent-2); stroke-opacity: 0.6; }
+  .graph .node.lo { opacity: 0.25; }
+  .graph .node .o { font: 11.5px var(--mono); fill: var(--ink-3); }
+  .graph .node .t { font: 500 13px var(--sans); fill: var(--ink); }
+  .graph .node.done .t { fill: var(--ink-2); }
+  .graph .node .m { font: 11px var(--mono); fill: var(--ink-3); }
+  .graph .node .dot { stroke: var(--ink-3); fill: none; stroke-width: 1.5; }
+  .graph .node.in-progress .dot { fill: var(--accent); stroke: var(--accent); }
+  .graph .node.done .dot { fill: var(--accent-2); stroke: var(--accent-2); }
+  .graph .node .pulse { fill: none; stroke: var(--accent); transform-origin: center; transform-box: fill-box; animation: ring 2.4s ease-out infinite; }
+  .graph .badge { font: 10.5px var(--mono); fill: var(--accent); }
+  .graph .badge-box { fill: none; stroke: var(--accent); rx: 2; }
+  .graph .ort { font: 10.5px var(--mono); fill: var(--ink-2); }
+  .graph .ort-box { fill: none; stroke: var(--ink-2); stroke-dasharray: 2 2; rx: 2; }
+
+  /* ---------- Overlay sheet (Node detail) ---------- */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(18, 21, 26, 0.78); display: none; align-items: flex-start;
+    justify-content: center; padding: 64px var(--gutter) 120px; overflow-y: auto; z-index: 20;
+  }
+  .overlay.open { display: flex; }
+  .sheet { position: relative; width: min(680px, 100%); background: var(--paper-alt); border: 1px solid var(--rule); border-radius: 4px; padding: 40px 40px 44px; }
+  .sheet .crumb { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin-bottom: 18px; }
+  .detail h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 6px; }
+  .detail .kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; margin: 18px 0; }
+  .detail .kv dt { color: var(--ink-2); font-family: var(--mono); font-size: 12px; padding-top: 2px; }
+  .detail .kv dd { margin: 0; }
+  .detail h3 { font-size: 12.5px; font-family: var(--mono); font-weight: 500; color: var(--ink-2); margin: 22px 0 8px; }
+  .detail ul { margin: 0; padding: 0; list-style: none; }
+  .detail li { padding: 6px 0; border-top: 1px solid var(--rule); display: flex; gap: 10px; align-items: baseline; }
+  .detail li:last-child { border-bottom: 1px solid var(--rule); }
+  .detail li .st { transform: translateY(-1px); }
+  .detail li button { text-align: left; color: var(--ink); }
+  .detail li button:hover { color: var(--accent); }
+  .detail .note { color: var(--ink-2); margin-top: 14px; }
+  .detail .empty { color: var(--ink-3); font-style: italic; }
+  .close { position: absolute; top: 16px; right: 16px; color: var(--ink-2); font-family: var(--mono); font-size: 12px; padding: 4px 8px; border: 1px solid var(--rule); border-radius: 2px; }
+  .close:hover { color: var(--ink); border-color: var(--ink-2); }
+
+  /* Motion variants. The backdrop always fades; only the sheet differs. Closing reverses, a little faster. */
+  .overlay { --t-open: 220ms; --t-close: 160ms; }
+  .overlay.open { animation: backdrop-in var(--t-open) ease-out both; }
+  .overlay.closing { animation: backdrop-out var(--t-close) ease-in both; }
+  @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+
+  /* 1 Settle */
+  .m1 .overlay.open .sheet { animation: settle-in var(--t-open) var(--ease-out) both; }
+  .m1 .overlay.closing .sheet { animation: settle-out var(--t-close) ease-in both; }
+  @keyframes settle-in { from { opacity: 0; transform: translateY(12px) scale(0.985); } to { opacity: 1; transform: none; } }
+  @keyframes settle-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(6px) scale(0.99); } }
+
+  /* 2 Emerge: transform-origin is set per open to the clicked Node */
+  .m2 .overlay { --t-open: 260ms; }
+  .m2 .overlay.open .sheet { animation: emerge-in var(--t-open) var(--ease-out) both; }
+  .m2 .overlay.closing .sheet { animation: emerge-out var(--t-close) ease-in both; }
+  @keyframes emerge-in { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: none; } }
+  @keyframes emerge-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: scale(0.94); } }
+
+  /* 3 Unfold: the sheet opens from its horizontal midline, then the text arrives */
+  .m3 .overlay { --t-open: 260ms; --t-close: 180ms; }
+  .m3 .overlay.open .sheet { animation: unfold-in var(--t-open) var(--ease-out) both; }
+  .m3 .overlay.open .sheet > * { animation: text-in 200ms ease-out 140ms both; }
+  .m3 .overlay.closing .sheet { animation: unfold-out var(--t-close) ease-in both; }
+  .m3 .overlay.closing .sheet > * { animation: text-out 100ms ease-in both; }
+  @keyframes unfold-in { from { clip-path: inset(50% 0 50% 0); } to { clip-path: inset(0 0 0 0); } }
+  @keyframes unfold-out { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(50% 0 50% 0); } }
+  @keyframes text-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes text-out { from { opacity: 1; } to { opacity: 0; } }
+
+  /* ---------- Prototype switcher (not part of the design) ---------- */
+  .proto {
+    position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 50;
+    display: flex; align-items: center; gap: 4px; padding: 6px 8px; border-radius: 999px;
+    background: #f3f4f8; color: #14171d; font: 500 12.5px var(--sans); box-shadow: 0 6px 24px rgba(0,0,0,.45);
+    max-width: calc(100vw - 32px);
+  }
+  .proto button { padding: 6px 10px; border-radius: 999px; color: inherit; }
+  .proto button:hover { background: #e2e5ee; }
+  .proto .label { padding: 0 6px; min-width: 130px; text-align: center; white-space: nowrap; }
+  .proto .sep { width: 1px; height: 18px; background: #c9cdd8; margin: 0 4px; }
+  .proto .sc { font-family: var(--mono); font-size: 11.5px; }
+  .proto .sc.on { background: #14171d; color: #f3f4f8; }
+  @media (max-width: 560px) { .proto .label { min-width: 0; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .st.in-progress::after, .graph .node .pulse { animation: none; opacity: 0.4; }
+    .heart .trace { animation: none !important; stroke-dasharray: none !important; stroke-dashoffset: 0 !important; }
+    .overlay, .overlay .sheet, .overlay .sheet > * { animation: none !important; }
+  }
+</style>
+
+<canvas id="net" aria-hidden="true"></canvas>
+<div id="app"></div>
+<div class="proto" role="toolbar" aria-label="Prototype controls">
+  <button id="prev" aria-label="Previous motion">&larr;</button>
+  <span class="label" id="label"></span>
+  <button id="next" aria-label="Next motion">&rarr;</button>
+  <span class="sep"></span>
+  <button class="sc" data-sc="launch">launch day</button>
+  <button class="sc" data-sc="month6">month 6</button>
+</div>
+
+<script>
+// ---------- Fixture: Roadmap v1 (ticket #10) ----------
+const LANES = ['Foundations', 'Machine Learning', 'AI Engineering', 'Backend'];
+const NODES = [
+  { o: 1,  title: 'Build the Roadmap Site', type: 'Project', lang: 'TypeScript', lane: 'Backend', h: 30, pre: [], note: 'The first in-progress Node of the Roadmap.' },
+  { o: 2,  title: 'Building with the Claude API', type: 'Resource', lane: 'AI Engineering', h: 5, pre: [], attached: ['Claude Platform 101', 'Claude Code 101'] },
+  { o: 3,  title: 'ai-for-beginners: NLP block', type: 'Resource', lane: 'Machine Learning', h: 20, pre: [], note: 'Lessons 13 to 15 and 18 to 20: TF-IDF, BM25, embeddings, BERT.' },
+  { o: 4,  title: 'RAG From Scratch (LangChain)', type: 'Resource', lane: 'AI Engineering', h: 5, pre: [] },
+  { o: 5,  title: 'P6 RAG Pipeline with Hybrid Search', type: 'Project', lang: 'Python', lane: 'AI Engineering', h: 35, pre: [2, 3, 4], attached: ['FastAPI primer', 'ArjanCodes, six videos', 'PyRIT reading'] },
+  { o: 6,  title: 'Brunton: Intro to Data Science', type: 'Resource', lane: 'Foundations', h: 3, pre: [] },
+  { o: 7,  title: 'Brunton: Probability Bootcamp', type: 'Resource', lane: 'Foundations', h: 11, pre: [6] },
+  { o: 8,  title: 'Brunton: Statistics and Data Analysis', type: 'Resource', lane: 'Foundations', h: 10, pre: [7], ort: 'Estadistica (ORT), illustrative mark' },
+  { o: 9,  title: 'P13 Eval Dataset Generator', type: 'Project', lang: 'Python', lane: 'AI Engineering', h: 35, pre: [5, 8], attached: ['Evals taxonomy reading'], note: 'P6 is the log source.' },
+  { o: 10, title: '3Blue1Brown: Essence of Linear Algebra', type: 'Resource', lane: 'Foundations', h: 9, pre: [], note: 'Three hours of video plus numpy practice.' },
+  { o: 11, title: 'P8 Text-to-SQL with Guardrails', type: 'Project', lang: 'TypeScript', lane: 'Backend', h: 35, pre: [2], attached: ['Guardrails and prompt-injection reading'] },
+  { o: 12, title: 'Brunton: Singular Value Decomposition', type: 'Resource', lane: 'Foundations', h: 7, pre: [10] },
+  { o: 13, title: 'Sriniously: Backend from First Principles', type: 'Resource', lane: 'Backend', h: 13, pre: [], note: 'Curated subset: videos 13, 14, 16, 21.x, 22 and 25.' },
+  { o: 14, title: 'P7 Semantic Cache for LLM APIs', type: 'Project', lang: 'TypeScript', lane: 'Backend', h: 40, pre: [5, 13], attached: ['Caching and cost reading'], note: 'Load Testing Platform merged in as a named phase.' },
+  { o: 15, title: 'Claude Code, MCP, subagents and skills', type: 'Resource', lane: 'AI Engineering', h: 10, pre: [2] },
+  { o: 16, title: 'VIRTUAL CODE Advanced Backend+AI, part 2 (AI half)', type: 'Resource', lane: 'AI Engineering', h: 5, pre: [5], note: 'LangGraph agents, RAG with Qdrant.' },
+  { o: 17, title: 'P15 Agent Orchestration System', type: 'Project', lang: 'Python', lane: 'AI Engineering', h: 45, pre: [5, 15, 16], note: 'Job Queue merged in as a named phase.' },
+  { o: 18, title: '3Blue1Brown: Calculus and Neural Networks', type: 'Resource', lane: 'Foundations', h: 5, pre: [10], note: 'Calculus chapters 1 to 4 and 8. Prelude to Karpathy.' },
+  { o: 19, title: 'Karpathy: Neural Networks Zero to Hero', type: 'Resource', lane: 'Machine Learning', h: 45, pre: [10, 18] },
+  { o: 20, title: 'Brunton: Optimization Bootcamp', type: 'Resource', lane: 'Foundations', h: 7, pre: [12, 18], note: 'Re-check playlist completeness before starting.' },
+  { o: 21, title: 'P10 Fine-Tuning Pipeline with LoRA', type: 'Project', lang: 'Python', lane: 'AI Engineering', h: 40, pre: [9, 12, 19, 20], attached: ['Karpathy lecture 10: GPT-2 reproduction'], note: 'Rented GPU. P13 measures the result.' },
+];
+const SCENARIOS = {
+  launch: { label: 'launch day', done: [], inProgress: 1, days: 0 },
+  month6: { label: 'month 6', done: [1, 2, 3, 4, 5], inProgress: 6, days: 12 },
+};
+const MOTIONS = [
+  { key: '1', name: 'Settle' },
+  { key: '2', name: 'Emerge' },
+  { key: '3', name: 'Unfold' },
+];
+
+// ---------- State ----------
+const params = new URLSearchParams(location.search);
+let motion = MOTIONS.some(m => m.key === params.get('motion')) ? params.get('motion') : '2';
+let scenario = SCENARIOS[params.get('scenario')] ? params.get('scenario') : 'launch';
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function byO(o) { return NODES.find(n => n.o === o); }
+function statusOf(n) {
+  const s = SCENARIOS[scenario];
+  if (s.done.includes(n.o)) return 'done';
+  if (s.inProgress === n.o) return 'in-progress';
+  return 'pending';
+}
+function nextNode() {
+  return NODES.find(n => statusOf(n) === 'pending' && n.pre.every(p => statusOf(byO(p)) === 'done'));
+}
+function dependents(n) { return NODES.filter(m => m.pre.includes(n.o)); }
+function hbGrade(days) { return days <= 3 ? 1 : days <= 10 ? 2 : days <= 20 ? 3 : 4; }
+function hbText(days) { return days === 0 ? 'today' : days === 1 ? 'yesterday' : days + ' days ago'; }
+function hours(list) { return list.reduce((a, n) => a + n.h, 0); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function sync() {
+  try {
+    const u = new URL(location.href);
+    u.searchParams.set('motion', motion);
+    u.searchParams.set('scenario', scenario);
+    history.replaceState(null, '', u);
+  } catch (e) { /* file:// in some browsers */ }
+}
+
+// ---------- Node detail body ----------
+function detailHTML(n) {
+  const st = statusOf(n);
+  const nx = nextNode();
+  const prereqs = n.pre.map(byO);
+  const deps = dependents(n);
+  const li = m => `<li><span class="st ${statusOf(m)}"></span><button data-open="${m.o}"><span class="mono muted">${String(m.o).padStart(2, '0')}</span> ${esc(m.title)}</button></li>`;
+  return `
+    <div class="detail">
+      <p class="mono muted">${String(n.o).padStart(2, '0')} of 21 in the Suggested Order</p>
+      <h2>${esc(n.title)}</h2>
+      <p class="muted">${n.type}${n.lang ? ', ' + n.lang : ''}. ${n.lane} Lane.</p>
+      <dl class="kv">
+        <dt>status</dt><dd><span class="st ${st}"></span> <span class="tok ${st}">${st}</span>${nx && nx.o === n.o ? ' <span class="chip next">next</span>' : ''}</dd>
+        <dt>estimate</dt><dd class="mono">${n.h} h</dd>
+        ${n.ort ? `<dt>ORT Overlap</dt><dd>${esc(n.ort)}</dd>` : ''}
+        <dt>source</dt><dd><a href="#">Open the ${n.type === 'Project' ? 'build guide' : 'resource'}</a></dd>
+      </dl>
+      ${n.note ? `<p class="note">${esc(n.note)}</p>` : ''}
+      <h3>prerequisites</h3>
+      ${prereqs.length ? `<ul>${prereqs.map(li).join('')}</ul>` : '<p class="empty">None. This Node can start any time.</p>'}
+      ${n.attached ? `<h3>attached reading</h3><ul>${n.attached.map(a => `<li><span class="muted mono">-</span>${esc(a)}</li>`).join('')}</ul>` : ''}
+      <h3>unlocks</h3>
+      ${deps.length ? `<ul>${deps.map(li).join('')}</ul>` : '<p class="empty">Nothing depends on this Node.</p>'}
+    </div>`;
+}
+
+// ---------- Masthead Heartbeat: the trace draws itself left to right every three seconds ----------
+function pulsePath(days) {
+  const amp = Math.max(0.12, 1 - days / 30);
+  let d = 'M0 30';
+  for (let x = 0; x < 320; x += 80) {
+    d += ` L${x + 22} 30 L${x + 30} ${30 - 6 * amp} L${x + 36} 30 L${x + 42} ${30 + 10 * amp} L${x + 48} ${30 - 26 * amp} L${x + 54} ${30 + 12 * amp} L${x + 60} 30 L${x + 80} 30`;
+  }
+  return d;
+}
+function heartHTML(days) {
+  const g = hbGrade(days);
+  return `<div class="heart">
+        <svg viewBox="0 0 320 56" aria-hidden="true">
+          <path class="trace stroke-${g}" d="${pulsePath(days)}" fill="none" stroke-width="1.5" stroke-linejoin="round"
+            style="stroke-dasharray: 640; stroke-dashoffset: 640; animation: dash 3s linear infinite;"/>
+        </svg>
+        <p class="line">last commit <b class="hb-${g}">${hbText(days)}</b></p>
+      </div>`;
+}
+
+// ---------- Page ----------
+function render() {
+  sync();
+  const s = SCENARIOS[scenario];
+  const nx = nextNode();
+  const COL = 260, ROW = 58, W = 232, H = 44, X0 = 30, Y0 = 70;
+  const pos = n => ({ x: X0 + LANES.indexOf(n.lane) * COL, y: Y0 + (n.o - 1) * ROW });
+  const height = Y0 + NODES.length * ROW + 20;
+  const width = X0 * 2 + COL * 4 - (COL - W);
+  const edges = NODES.flatMap(n => n.pre.map(p => ({ from: byO(p), to: n })));
+  const edgePath = e => {
+    const a = pos(e.from), b = pos(e.to);
+    const x1 = a.x + W / 2, y1 = a.y + H, x2 = b.x + W / 2, y2 = b.y;
+    const dy = Math.max(24, (y2 - y1) / 2);
+    return `M${x1} ${y1} C${x1} ${y1 + dy}, ${x2} ${y2 - dy}, ${x2} ${y2}`;
+  };
+  document.body.className = 'm' + motion;
+  label.textContent = `${motion}  ${MOTIONS.find(m => m.key === motion).name}`;
+  document.querySelectorAll('.proto .sc').forEach(b => b.classList.toggle('on', b.dataset.sc === scenario));
+
+  app.innerHTML = `
+    <header class="mast">
+      <div>
+        <h1>Continuous Learning Roadmap</h1>
+        <p class="lede">One backend engineer moving toward AI engineering. Read top to bottom: that is the Suggested Order. Lines are Prerequisites, the only hard rule. No deadlines: the Heartbeat is the only clock.</p>
+      </div>
+      ${heartHTML(s.days)}
+    </header>
+    <p class="intro">Click a Node for its detail. Hover one to see what it needs and what it unlocks.</p>
+    <div class="scroll">
+    <svg class="graph" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" role="img" aria-label="Roadmap graph">
+      ${LANES.map((l, i) => {
+        const list = NODES.filter(n => n.lane === l);
+        const done = list.filter(n => statusOf(n) === 'done').length;
+        const x = X0 + i * COL;
+        return `<text class="lane-head" x="${x}" y="24">${l}</text>
+                <text class="lane-sub" x="${x}" y="42">${done}/${list.length} done, ${hours(list)} h</text>
+                <line class="lane-line" x1="${x + W / 2}" y1="52" x2="${x + W / 2}" y2="${height - 10}"/>`;
+      }).join('')}
+      ${edges.map(e => `<path class="edge" data-from="${e.from.o}" data-to="${e.to.o}" d="${edgePath(e)}"/>`).join('')}
+      ${NODES.map(n => {
+        const p = pos(n), st = statusOf(n);
+        const max = (nx && nx.o === n.o) || n.ort ? 18 : 30;
+        const title = n.title.length > max ? n.title.slice(0, max - 1).trimEnd() + '…' : n.title;
+        return `<g class="node ${st}" data-o="${n.o}" tabindex="0" role="button" aria-label="${esc(n.title)}">
+          <rect class="box" x="${p.x}" y="${p.y}" width="${W}" height="${H}"/>
+          ${st === 'in-progress' ? `<circle class="pulse" cx="${p.x + 16}" cy="${p.y + 22}" r="8"/>` : ''}
+          <circle class="dot" cx="${p.x + 16}" cy="${p.y + 22}" r="4.5"/>
+          <text class="o" x="${p.x + 30}" y="${p.y + 17}">${String(n.o).padStart(2, '0')}</text>
+          <text class="t" x="${p.x + 52}" y="${p.y + 18}">${esc(title)}</text>
+          <text class="m" x="${p.x + 52}" y="${p.y + 34}">${n.type === 'Project' ? 'project' : 'resource'} ${n.h}h${n.lang ? ' ' + n.lang.toLowerCase() : ''}</text>
+          ${nx && nx.o === n.o ? `<rect class="badge-box" x="${p.x + W - 44}" y="${p.y + 8}" width="36" height="16"/><text class="badge" x="${p.x + W - 38}" y="${p.y + 19.5}">next</text>` : ''}
+          ${n.ort ? `<rect class="ort-box" x="${p.x + W - 40}" y="${p.y + 8}" width="32" height="16"/><text class="ort" x="${p.x + W - 34}" y="${p.y + 19.5}">ORT</text>` : ''}
+        </g>`;
+      }).join('')}
+    </svg>
+    </div>
+    <div class="overlay" id="overlay" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>`;
+
+  const svg = app.querySelector('.graph');
+  const overlay = app.querySelector('#overlay');
+  const sheet = app.querySelector('#sheet');
+  let closing = null;
+
+  // Open the sheet. `from` is the element the opening grows out of (motion 2 uses it as transform-origin).
+  const open = (o, from) => {
+    clearTimeout(closing); overlay.classList.remove('closing');
+    const n = byO(o);
+    sheet.innerHTML = `<button class="close" data-close>close</button><p class="crumb">roadmap / ${n.lane.toLowerCase()} / ${String(o).padStart(2, '0')}</p>` + detailHTML(n);
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+    svg.querySelectorAll('.node').forEach(el => el.classList.toggle('selected', +el.dataset.o === o));
+    // Measure with the animation off so the sheet rect is unscaled, then (re)start it.
+    sheet.style.animation = 'none';
+    if (motion === '2' && from) {
+      const a = from.getBoundingClientRect(), b = sheet.getBoundingClientRect();
+      sheet.style.transformOrigin = `${a.left + a.width / 2 - b.left}px ${a.top + a.height / 2 - b.top}px`;
+    } else {
+      sheet.style.transformOrigin = '';
+    }
+    void sheet.offsetWidth; sheet.style.animation = '';
+    sheet.querySelector('.close').focus({ preventScroll: true });
+  };
+  const close = () => {
+    if (!overlay.classList.contains('open')) return;
+    svg.querySelectorAll('.selected').forEach(x => x.classList.remove('selected'));
+    if (reduced) { overlay.classList.remove('open'); return; }
+    overlay.classList.remove('open'); overlay.classList.add('closing');
+    overlay.style.display = 'flex';
+    const ms = parseFloat(getComputedStyle(overlay).getPropertyValue('--t-close')) || 160;
+    closing = setTimeout(() => { overlay.classList.remove('closing'); overlay.style.display = ''; }, ms);
+  };
+  const focus = n => {
+    const rel = new Set([n.o, ...n.pre, ...dependents(n).map(d => d.o)]);
+    svg.querySelectorAll('.node').forEach(el => el.classList.toggle('lo', !rel.has(+el.dataset.o)));
+    svg.querySelectorAll('.edge').forEach(el => {
+      const hit = +el.dataset.to === n.o || +el.dataset.from === n.o;
+      el.classList.toggle('hi', hit); el.classList.toggle('lo', !hit);
+    });
+  };
+  const unfocus = () => svg.querySelectorAll('.lo, .hi').forEach(el => el.classList.remove('lo', 'hi'));
+  svg.addEventListener('mouseover', e => { const el = e.target.closest('.node'); if (el) focus(byO(+el.dataset.o)); });
+  svg.addEventListener('mouseleave', unfocus);
+  svg.addEventListener('focusin', e => { const el = e.target.closest('.node'); if (el) focus(byO(+el.dataset.o)); });
+  svg.addEventListener('focusout', unfocus);
+  svg.addEventListener('click', e => { const el = e.target.closest('.node'); if (el) open(+el.dataset.o, el); });
+  svg.addEventListener('keydown', e => { const el = e.target.closest('.node'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); open(+el.dataset.o, el); } });
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay || e.target.closest('[data-close]')) { close(); return; }
+    const b = e.target.closest('[data-open]');
+    if (b) open(+b.dataset.open, svg.querySelector(`.node[data-o="${b.dataset.open}"]`));
+  });
+  app.closeSheet = close;
+}
+
+// ---------- Switcher ----------
+const app = document.getElementById('app');
+const label = document.getElementById('label');
+function cycle(d) {
+  const i = MOTIONS.findIndex(m => m.key === motion);
+  motion = MOTIONS[(i + d + MOTIONS.length) % MOTIONS.length].key;
+  render();
+}
+document.getElementById('prev').addEventListener('click', () => cycle(-1));
+document.getElementById('next').addEventListener('click', () => cycle(1));
+document.querySelectorAll('.proto .sc').forEach(b => b.addEventListener('click', () => { scenario = b.dataset.sc; render(); }));
+document.addEventListener('keydown', e => {
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+  if (e.key === 'ArrowLeft') cycle(-1);
+  if (e.key === 'ArrowRight') cycle(1);
+  if (e.key === 'Escape') app.closeSheet();
+});
+render();
+
+// ---------- Background: slow neural-network drift (indigo, behind everything) ----------
+(function network() {
+  const c = document.getElementById('net');
+  const ctx = c.getContext('2d');
+  const REACH = 150;
+  let w = 0, h = 0, pts = [];
+  function resize() {
+    w = c.width = innerWidth; h = c.height = innerHeight;
+    const count = Math.round((w * h) / 20000);
+    pts = Array.from({ length: count }, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16,
+      r: 0.9 + Math.random() * 1.3,
+    }));
+  }
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < -REACH) p.x = w + REACH; else if (p.x > w + REACH) p.x = -REACH;
+      if (p.y < -REACH) p.y = h + REACH; else if (p.y > h + REACH) p.y = -REACH;
+    }
+    ctx.lineWidth = 0.8;
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i + 1; j < pts.length; j++) {
+        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
+        const d = Math.hypot(dx, dy);
+        if (d > REACH) continue;
+        ctx.strokeStyle = `rgba(154, 166, 239, ${(1 - d / REACH) * 0.22})`;
+        ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y); ctx.stroke();
+      }
+    }
+    ctx.fillStyle = 'rgba(154, 166, 239, 0.55)';
+    for (const p of pts) { ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); }
+    if (!reduced) requestAnimationFrame(frame);
+  }
+  resize(); frame();
+  addEventListener('resize', () => { resize(); if (reduced) frame(); });
+})();
+</script>
