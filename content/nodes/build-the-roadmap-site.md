@@ -15,10 +15,10 @@ repo: https://github.com/ngvior/continuous-learning-roadmap
 demo: https://continuous-learning-roadmap.vercel.app
 phases:
   - Content schema and validator
+  - Roadmap CLI
   - Swimlane graph
   - Node detail sheet
   - Heartbeat
-  - Roadmap CLI
 attached: []
 ---
 
@@ -27,3 +27,4 @@ The public Next.js application that renders this Roadmap: its Lanes, Nodes, Prer
 ## Log
 
 - 2026-09-11: Bootstrapped the Next.js skeleton and made the first Vercel deploy.
+- 2026-09-11: Landed the content module: the Zod schema, the loader that derives Next and unlocks, and the cross-file validator wired as prebuild.
