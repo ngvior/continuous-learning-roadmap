@@ -12,6 +12,7 @@ links:
 started: "2026-09-11"
 language: typescript
 repo: https://github.com/ngvior/continuous-learning-roadmap
+demo: https://continuous-learning-roadmap.vercel.app
 phases:
   - Content schema and validator
   - Swimlane graph
