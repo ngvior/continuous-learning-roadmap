@@ -1,0 +1,75 @@
+.heart {
+  --pulse: var(--accent-2);
+  min-width: 320px;
+  text-align: right;
+}
+
+.heart[data-grade="steady"] {
+  --pulse: var(--ink);
+}
+
+.heart[data-grade="aging"] {
+  --pulse: var(--age-3);
+}
+
+.heart[data-grade="stale"] {
+  --pulse: var(--age-4);
+}
+
+.heart[data-grade="unavailable"] {
+  --pulse: var(--ink-3);
+}
+
+.svg {
+  display: block;
+  width: 320px;
+  max-width: 100%;
+  height: 56px;
+  margin-left: auto;
+}
+
+/* Draws itself left to right every three seconds. */
+.trace {
+  stroke: var(--pulse);
+  stroke-dasharray: 640;
+  stroke-dashoffset: 640;
+  animation: draw 3s linear infinite;
+}
+
+/* No commit data, no pulse: the flat line stays still. */
+.heart[data-grade="unavailable"] .trace {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+.line {
+  margin-top: 6px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.age {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--pulse);
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .heart {
+    min-width: 0;
+    text-align: left;
+  }
+
+  .svg {
+    margin-left: 0;
+  }
+}
