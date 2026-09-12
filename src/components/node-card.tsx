@@ -1,16 +1,17 @@
 import type { GraphNode } from "@/content/graph";
 import styles from "./roadmap-graph.module.css";
+import { STATUS_LABEL, StatusGlyph } from "./status-glyph";
 
-const STATUS_LABEL: Record<GraphNode["status"], string> = {
-  pending: "pending",
-  "in-progress": "in progress",
-  done: "done",
-};
-
-export function NodeCard({ node }: { node: GraphNode }) {
+export function NodeCard({ node, onOpen }: { node: GraphNode; onOpen: () => void }) {
   return (
-    <button type="button" className={styles.card} data-status={node.status}>
-      <span className={styles.glyph} aria-hidden="true" />
+    <button
+      type="button"
+      className={styles.card}
+      data-status={node.status}
+      data-node-id={node.id}
+      onClick={onOpen}
+    >
+      <StatusGlyph status={node.status} className={styles.glyph} />
       <span className={styles.order}>{String(node.order).padStart(2, "0")}</span>
       <span className={styles.body}>
         <span className={styles.title}>{node.title}</span>

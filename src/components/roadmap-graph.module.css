@@ -128,43 +128,7 @@
 }
 
 .glyph {
-  position: relative;
-  flex: none;
-  width: 9px;
-  height: 9px;
   margin-top: 5px;
-  border: 1.5px solid var(--ink-2);
-  border-radius: 50%;
-}
-
-.card[data-status="in-progress"] .glyph {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.card[data-status="in-progress"] .glyph::after {
-  content: "";
-  position: absolute;
-  inset: -5px;
-  border: 1px solid var(--accent);
-  border-radius: 50%;
-  animation: ring 2.4s ease-out infinite;
-}
-
-.card[data-status="done"] .glyph {
-  background: var(--accent-2);
-  border-color: var(--accent-2);
-}
-
-@keyframes ring {
-  from {
-    transform: scale(0.6);
-    opacity: 0.7;
-  }
-  to {
-    transform: scale(1.4);
-    opacity: 0;
-  }
 }
 
 .order,

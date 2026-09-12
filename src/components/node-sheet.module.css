@@ -1,0 +1,211 @@
+/* The dialog itself is the dimmed backdrop, so a click on it (outside the sheet) closes. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 64px clamp(16px, 4vw, 48px) 120px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  background: rgb(18 21 26 / 0.78);
+  border: 0;
+}
+
+.overlay::backdrop {
+  background: transparent;
+}
+
+.sheet {
+  position: relative;
+  width: min(680px, 100%);
+  margin: 0 auto;
+  padding: 40px 40px 44px;
+  background: var(--paper-alt);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+.mono,
+.crumb,
+.facts dt,
+.sectionTitle,
+.close,
+.next {
+  font-family: var(--font-mono), ui-monospace, monospace;
+}
+
+.mono {
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--ink-2);
+  cursor: pointer;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+.close:hover {
+  color: var(--ink);
+  border-color: var(--ink-2);
+}
+
+.crumb {
+  margin-bottom: 18px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.title {
+  margin-bottom: 6px;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.kind {
+  color: var(--ink-2);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 18px;
+  margin: 18px 0;
+}
+
+.facts dt {
+  padding-top: 2px;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.facts dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.next {
+  padding: 3px 6px;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  text-decoration-color: var(--accent);
+}
+
+.description {
+  margin-top: 14px;
+  color: var(--ink-2);
+}
+
+.description > :global(* + *) {
+  margin-top: 0.8em;
+}
+
+.description :global(a) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.description :global(code) {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+.description :global(strong) {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.description :global(ul),
+.description :global(ol) {
+  padding-left: 1.25em;
+  list-style: revert;
+}
+
+.sectionTitle {
+  margin: 22px 0 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.list li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.trailing {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.nodeRef {
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.nodeRef:hover {
+  color: var(--accent);
+}
+
+.empty {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+@media (max-width: 560px) {
+  .overlay {
+    padding-top: 24px;
+  }
+
+  .sheet {
+    padding: 44px 20px 32px;
+  }
+}

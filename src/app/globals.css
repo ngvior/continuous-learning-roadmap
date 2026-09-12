@@ -50,3 +50,8 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* The Node detail sheet is a modal dialog; the page behind it must not scroll. */
+html:has(dialog[open]) {
+  overflow: hidden;
+}

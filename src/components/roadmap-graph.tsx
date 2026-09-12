@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import type { GraphModel } from "@/content/graph";
 import { NodeCard } from "./node-card";
+import { openNodeInUrl } from "./node-url";
 import styles from "./roadmap-graph.module.css";
 
 type EdgePath = { from: string; to: string; d: string };
@@ -108,7 +109,7 @@ export function RoadmapGraph({ lanes, nodes, edges }: GraphModel) {
               onFocus={() => setActiveId(node.id)}
               onBlur={() => setActiveId(null)}
             >
-              <NodeCard node={node} />
+              <NodeCard node={node} onOpen={() => openNodeInUrl(node.id)} />
             </li>
           ))}
         </ol>

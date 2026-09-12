@@ -1,0 +1,39 @@
+.glyph {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--ink-2);
+  border-radius: 50%;
+}
+
+.glyph[data-status="in-progress"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.glyph[data-status="in-progress"]::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  animation: ring 2.4s ease-out infinite;
+}
+
+.glyph[data-status="done"] {
+  background: var(--accent-2);
+  border-color: var(--accent-2);
+}
+
+@keyframes ring {
+  from {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
