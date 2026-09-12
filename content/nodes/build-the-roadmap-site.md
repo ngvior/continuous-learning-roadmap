@@ -30,3 +30,4 @@ The public Next.js application that renders this Roadmap: its Lanes, Nodes, Prer
 - 2026-09-11: Landed the content module: the Zod schema, the loader that derives Next and unlocks, and the cross-file validator wired as prebuild.
 - 2026-09-12: Roadmap CLI landed
 - 2026-09-12: Swimlane graph live
+- 2026-09-12: Node detail sheet live
