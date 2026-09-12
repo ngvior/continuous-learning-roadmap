@@ -48,10 +48,15 @@ export class ContentError extends Error {
 }
 
 const FRONTMATTER = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
-const LOG_HEADING = /^##[ \t]+Log[ \t]*$/m;
+/** The `## Log` heading that opens the dated Log section of a Node file. */
+export const LOG_HEADING = /^##[ \t]+Log[ \t]*$/m;
 const LOG_ENTRY = /^-[ \t]*(\d{4}-\d{2}-\d{2}):[ \t]*(.+)$/;
 
-function splitFrontmatter(raw: string): { frontmatter: string; body: string } {
+/** Splits a Node file into its raw YAML frontmatter and the Markdown body. */
+export function splitFrontmatter(raw: string): {
+  frontmatter: string;
+  body: string;
+} {
   const match = FRONTMATTER.exec(raw);
   if (!match) {
     throw new Error("missing YAML frontmatter delimited by ---");

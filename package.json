@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "prebuild": "tsx scripts/validate.ts",
+    "roadmap": "tsx scripts/roadmap.ts",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
