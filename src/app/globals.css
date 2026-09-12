@@ -1,21 +1,35 @@
 @import "tailwindcss";
 
+/*
+ * Indigo dark base with Aura accents. Colour is reserved for Status and the
+ * Heartbeat; Lanes carry no hue. ink-3 fails AA on paper, so it never sets text.
+ */
 :root {
   --paper: #12151a;
   --paper-alt: #1b1f27;
   --ink: #dfe4ec;
+  --ink-2: #8b94a7;
+  --ink-3: #565e72;
   --rule: #2e3440;
-  --accent: #9aa6ef;
-  --accent-2: #62b8bf;
+  --accent: #a277ff;
+  --accent-2: #61ffca;
+  --age-3: #ffca85;
+  --age-4: #ff6767;
+  --indigo: #9aa6ef;
 }
 
 @theme inline {
   --color-paper: var(--paper);
   --color-paper-alt: var(--paper-alt);
   --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
   --color-rule: var(--rule);
   --color-accent: var(--accent);
   --color-accent-2: var(--accent-2);
+  --color-age-3: var(--age-3);
+  --color-age-4: var(--age-4);
+  --color-indigo: var(--indigo);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
 }
@@ -28,4 +42,11 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
