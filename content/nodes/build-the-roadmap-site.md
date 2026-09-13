@@ -32,3 +32,4 @@ The public Next.js application that renders this Roadmap: its Lanes, Nodes, Prer
 - 2026-09-12: Swimlane graph live
 - 2026-09-12: Node detail sheet live
 - 2026-09-12: Heartbeat live
+- 2026-09-12: Visual polish landed
