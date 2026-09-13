@@ -3,13 +3,14 @@ title: Build the Roadmap Site
 type: project
 lane: backend
 order: 1
-status: in-progress
+status: done
 hours: 30
 prerequisites: []
 links:
   - label: Repository
     url: https://github.com/ngvior/continuous-learning-roadmap
 started: "2026-09-11"
+finished: "2026-09-12"
 language: typescript
 repo: https://github.com/ngvior/continuous-learning-roadmap
 demo: https://continuous-learning-roadmap.vercel.app
