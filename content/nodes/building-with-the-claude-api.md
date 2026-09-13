@@ -4,7 +4,7 @@ type: resource
 lane: ai-engineering
 order: 2
 status: in-progress
-hours: 5
+hours: 15
 prerequisites: []
 links:
   - label: Building with the Claude API (Claude Academy)
