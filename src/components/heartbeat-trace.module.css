@@ -63,6 +63,15 @@
   }
 }
 
+/* Reduced motion: the whole trace, drawn once. */
+@media (prefers-reduced-motion: reduce) {
+  .trace {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+}
+
 @media (max-width: 720px) {
   .heart {
     min-width: 0;

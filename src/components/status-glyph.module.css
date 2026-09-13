@@ -27,6 +27,13 @@
   border-color: var(--accent-2);
 }
 
+/* Reduced motion: the filled dot alone marks in progress. */
+@media (prefers-reduced-motion: reduce) {
+  .glyph[data-status="in-progress"]::after {
+    content: none;
+  }
+}
+
 @keyframes ring {
   from {
     transform: scale(0.6);

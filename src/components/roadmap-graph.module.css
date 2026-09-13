@@ -1,12 +1,25 @@
+/*
+ * Too narrow for every Lane, the graph scrolls sideways inside itself instead of
+ * reflowing. The 4 px padding keeps focus outlines clear of the scroll clip.
+ */
 .graph {
-  margin-top: 24px;
+  --lane-min: 232px;
+  --lane-gap: 28px;
+  margin: 20px -4px 0;
+  padding: 4px;
+  overflow-x: auto;
+}
+
+.plane {
+  min-width: calc(var(--lanes) * var(--lane-min) + (var(--lanes) - 1) * var(--lane-gap));
 }
 
 .laneHeads,
 .rails,
 .nodes {
   display: grid;
-  column-gap: 28px;
+  grid-template-columns: repeat(var(--lanes), minmax(var(--lane-min), 1fr));
+  column-gap: var(--lane-gap);
 }
 
 .laneHeads {
@@ -89,6 +102,14 @@
 
 .slot[data-dimmed] {
   opacity: 0.25;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edge,
+  .slot,
+  .card {
+    transition: none;
+  }
 }
 
 /* ---------- Node card ---------- */

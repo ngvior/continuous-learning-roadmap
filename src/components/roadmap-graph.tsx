@@ -57,62 +57,62 @@ export function RoadmapGraph({ lanes, nodes, edges }: GraphModel) {
   }, [edges]);
 
   const related = new Set(nodes.find((node) => node.id === activeId)?.related ?? []);
-  const columns: CSSProperties = {
-    gridTemplateColumns: `repeat(${lanes.length}, minmax(232px, 1fr))`,
-  };
+  const laneCount = { "--lanes": lanes.length } as CSSProperties;
 
   return (
     <section aria-label="Roadmap graph" className={styles.graph}>
-      <div className={styles.laneHeads} style={columns}>
-        {lanes.map((lane) => (
-          <div key={lane.id}>
-            <h2 className={styles.laneTitle}>{lane.title}</h2>
-            <p className={styles.laneStats}>
-              {lane.done}/{lane.total} done, {lane.hours} h
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <div ref={containerRef} className={styles.canvas}>
-        <div className={styles.rails} style={columns} aria-hidden="true">
+      <div className={styles.plane} style={laneCount}>
+        <div className={styles.laneHeads}>
           {lanes.map((lane) => (
-            <div key={lane.id} className={styles.rail} />
+            <div key={lane.id}>
+              <h2 className={styles.laneTitle}>{lane.title}</h2>
+              <p className={styles.laneStats}>
+                {lane.done}/{lane.total} done, {lane.hours} h
+              </p>
+            </div>
           ))}
         </div>
-
-        <svg className={styles.edges} aria-hidden="true">
-          {paths.map((path) => {
-            const touches = activeId !== null && (path.from === activeId || path.to === activeId);
-            const state = activeId === null ? undefined : touches ? "hi" : "lo";
-            return (
-              <path key={`${path.from}->${path.to}`} className={styles.edge} data-state={state} d={path.d} />
-            );
-          })}
-        </svg>
-
-        <ol className={styles.nodes} style={columns} aria-label="Nodes in Suggested Order">
-          {nodes.map((node) => (
-            <li
-              key={node.id}
-              ref={(element) => {
-                if (element) cardsRef.current.set(node.id, element);
-                return () => {
-                  cardsRef.current.delete(node.id);
-                };
-              }}
-              className={styles.slot}
-              style={{ gridColumn: node.column, gridRow: node.row }}
-              data-dimmed={activeId !== null && !related.has(node.id) ? "" : undefined}
-              onMouseEnter={() => setActiveId(node.id)}
-              onMouseLeave={() => setActiveId(null)}
-              onFocus={() => setActiveId(node.id)}
-              onBlur={() => setActiveId(null)}
-            >
-              <NodeCard node={node} onOpen={() => openNodeInUrl(node.id)} />
-            </li>
-          ))}
-        </ol>
+  
+        <div ref={containerRef} className={styles.canvas}>
+          <div className={styles.rails} aria-hidden="true">
+            {lanes.map((lane) => (
+              <div key={lane.id} className={styles.rail} />
+            ))}
+          </div>
+  
+          <svg className={styles.edges} aria-hidden="true">
+            {paths.map((path) => {
+              const touches = activeId !== null && (path.from === activeId || path.to === activeId);
+              const state = activeId === null ? undefined : touches ? "hi" : "lo";
+              return (
+                <path key={`${path.from}->${path.to}`} className={styles.edge} data-state={state} d={path.d} />
+              );
+            })}
+          </svg>
+  
+          <ol className={styles.nodes} aria-label="Nodes in Suggested Order">
+            {nodes.map((node) => (
+              <li
+                key={node.id}
+                ref={(element) => {
+                  if (element) cardsRef.current.set(node.id, element);
+                  return () => {
+                    cardsRef.current.delete(node.id);
+                  };
+                }}
+                className={styles.slot}
+                style={{ gridColumn: node.column, gridRow: node.row }}
+                data-dimmed={activeId !== null && !related.has(node.id) ? "" : undefined}
+                onMouseEnter={() => setActiveId(node.id)}
+                onMouseLeave={() => setActiveId(null)}
+                onFocus={() => setActiveId(node.id)}
+                onBlur={() => setActiveId(null)}
+              >
+                <NodeCard node={node} onOpen={() => openNodeInUrl(node.id)} />
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </section>
   );
