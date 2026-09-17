@@ -19,3 +19,7 @@ started: "2026-09-12"
 ---
 
 The core technical course of Claude Academy: prompting, tool use, RAG, agents, MCP and production patterns against the Claude API, with quizzes that grant a free, non-expiring completion badge. It is the on-ramp for every BASWE Project on the AI Engineering Lane, which call the model API directly rather than through a framework. The two short companion courses, Claude Platform 101 and Claude Code 101, are listed here as extra links because a Resource cannot carry Attached Reading; they are part of this Node, not separate Nodes.
+
+## Log
+
+- 2026-09-17: Completed Accessing Claude with the API section and scored 8/8 on the quiz
