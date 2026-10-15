@@ -2,7 +2,7 @@
 title: P15 Agent Orchestration System
 type: project
 lane: ai-engineering
-order: 17
+order: 23
 status: pending
 hours: 45
 prerequisites:

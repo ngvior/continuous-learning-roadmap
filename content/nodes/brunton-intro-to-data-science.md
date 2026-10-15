@@ -2,7 +2,7 @@
 title: "Brunton: Intro to Data Science"
 type: resource
 lane: foundations
-order: 6
+order: 11
 status: pending
 hours: 3
 prerequisites: []

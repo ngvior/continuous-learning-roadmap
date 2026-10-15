@@ -2,7 +2,7 @@
 title: Claude Code, MCP, subagents and skills
 type: resource
 lane: ai-engineering
-order: 15
+order: 21
 status: pending
 hours: 10
 prerequisites:

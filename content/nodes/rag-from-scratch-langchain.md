@@ -2,7 +2,7 @@
 title: RAG From Scratch (LangChain)
 type: resource
 lane: ai-engineering
-order: 4
+order: 8
 status: pending
 hours: 5
 prerequisites: []

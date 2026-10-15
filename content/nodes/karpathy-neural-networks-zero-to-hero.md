@@ -2,7 +2,7 @@
 title: "Karpathy: Neural Networks Zero to Hero"
 type: resource
 lane: machine-learning
-order: 19
+order: 25
 status: pending
 hours: 45
 prerequisites:

@@ -2,7 +2,7 @@
 title: "Brunton: Statistics and Data Analysis"
 type: resource
 lane: foundations
-order: 8
+order: 13
 status: pending
 hours: 10
 prerequisites:

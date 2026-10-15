@@ -2,7 +2,7 @@
 title: P10 Fine-Tuning Pipeline with LoRA
 type: project
 lane: ai-engineering
-order: 21
+order: 27
 status: pending
 hours: 40
 prerequisites:

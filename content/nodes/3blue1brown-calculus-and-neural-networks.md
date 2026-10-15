@@ -2,7 +2,7 @@
 title: "3Blue1Brown: Calculus (ch. 1-4, 8) and Neural Networks"
 type: resource
 lane: foundations
-order: 18
+order: 24
 status: pending
 hours: 5
 prerequisites:

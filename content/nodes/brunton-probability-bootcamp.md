@@ -2,7 +2,7 @@
 title: "Brunton: Probability Bootcamp"
 type: resource
 lane: foundations
-order: 7
+order: 12
 status: pending
 hours: 11
 prerequisites:

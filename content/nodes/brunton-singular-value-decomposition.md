@@ -2,7 +2,7 @@
 title: "Brunton: Singular Value Decomposition"
 type: resource
 lane: foundations
-order: 12
+order: 17
 status: pending
 hours: 7
 prerequisites:

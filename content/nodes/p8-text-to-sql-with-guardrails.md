@@ -2,7 +2,7 @@
 title: P8 Text-to-SQL with Guardrails
 type: project
 lane: backend
-order: 11
+order: 16
 status: pending
 hours: 35
 prerequisites:

@@ -13,4 +13,4 @@
 - id: backend
   title: Backend
   order: 4
-  description: Distributed-systems depth for a working NestJS engineer (caching, queues, scaling, fault tolerance) plus the TypeScript Projects that apply it, including the Roadmap Site itself.
+  description: Distributed-systems and production depth for a working NestJS engineer (event streaming, caching, scaling, fault tolerance, infrastructure as code, Kubernetes, observability) plus the Projects that apply it, including the Roadmap Site itself and a service shipped and operated in production.

@@ -2,7 +2,7 @@
 title: "3Blue1Brown: Essence of Linear Algebra"
 type: resource
 lane: foundations
-order: 10
+order: 15
 status: pending
 hours: 9
 prerequisites: []

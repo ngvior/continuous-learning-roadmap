@@ -2,7 +2,7 @@
 title: "Sriniously: Backend from First Principles (curated)"
 type: resource
 lane: backend
-order: 13
+order: 18
 status: pending
 hours: 13
 prerequisites: []

@@ -2,7 +2,7 @@
 title: P7 Semantic Cache for LLM APIs
 type: project
 lane: backend
-order: 14
+order: 20
 status: pending
 hours: 40
 prerequisites:

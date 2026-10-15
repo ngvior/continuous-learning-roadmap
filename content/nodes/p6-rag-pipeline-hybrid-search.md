@@ -2,13 +2,14 @@
 title: P6 RAG Pipeline with Hybrid Search
 type: project
 lane: ai-engineering
-order: 5
+order: 10
 status: pending
 hours: 35
 prerequisites:
   - building-with-the-claude-api
   - ai-for-beginners-nlp-block
   - rag-from-scratch-langchain
+  - python-production-backend-patterns
 links: []
 language: python
 phases:

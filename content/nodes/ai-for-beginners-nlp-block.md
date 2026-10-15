@@ -2,7 +2,7 @@
 title: "ai-for-beginners: NLP block"
 type: resource
 lane: machine-learning
-order: 3
+order: 7
 status: pending
 hours: 20
 prerequisites: []

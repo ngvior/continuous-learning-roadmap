@@ -2,7 +2,7 @@
 title: "Brunton: Optimization Bootcamp"
 type: resource
 lane: foundations
-order: 20
+order: 26
 status: pending
 hours: 7
 prerequisites:

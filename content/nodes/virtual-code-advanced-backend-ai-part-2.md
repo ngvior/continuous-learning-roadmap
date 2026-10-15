@@ -2,7 +2,7 @@
 title: VIRTUAL CODE Advanced Backend+AI, part 2 AI half
 type: resource
 lane: ai-engineering
-order: 16
+order: 22
 status: pending
 hours: 5
 prerequisites:
