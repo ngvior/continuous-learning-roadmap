@@ -23,3 +23,4 @@ The core technical course of Claude Academy: prompting, tool use, RAG, agents, M
 ## Log
 
 - 2026-09-17: Completed Accessing Claude with the API section and scored 8/8 on the quiz
+- 2026-10-15: Finished 'Prompt evaluation' node and scored 6/6 on the quiz
